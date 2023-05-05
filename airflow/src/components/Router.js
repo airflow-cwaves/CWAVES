@@ -4,14 +4,14 @@ import {
   HashRouter as Router,
   Route,
 } from "react-router-dom";
-import Kakao from "../kakaomap/Kakao";
 import Pathfinding from "../pages/Pathfinding";
+import Home from "../pages/Home";
 
 const AppRouter = () => {
   return (
     <BrowserRouter>
         <Routes>
-            <Route path="/" element={<Kakao/>} />
+            <Route path="/" element={<Home/>} />
         </Routes>
         <Routes>
             <Route path="/pathfinding" element={<Pathfinding/>} />
