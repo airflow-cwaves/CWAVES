@@ -1,11 +1,7 @@
-import React from "react";
+import React, { useRef, useState } from "react";
 import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
-const Title = styled.div`
-  text-align: center;
-`;
 const { kakao } = window;
 var polygonPath = [
     new kakao.maps.LatLng(37.545465145649576, 126.96520280169624),
@@ -29,16 +25,19 @@ var polygonPath = [
 ];
 
 const Kakao=()=>{
-    const navi=useNavigate();
-    
+    const container = useRef(<Map/>);
+    const [map,setMap]=useState(null);
+    const [rate,setRate]=useState('공기청정도 낮음');
+    let content=`<Detail class="label">${rate}</Detail>`;
     useEffect(()=>{
-        const container = document.getElementById('map');
         const options = {
             center: new kakao.maps.LatLng(37.545472, 126.965074),
             level: 3
         };
-        var polygon = new kakao.maps.Polygon({
-            path:polygonPath, // 그려질 다각형의 좌표 배열입니다
+        var polygon = new kakao.maps.Circle({
+            // path:polygonPath, // 그려질 다각형의 좌표 배열입니다
+            center: polygonPath[0],
+            radius: 50,
             strokeWeight: 3, // 선의 두께입니다
             strokeColor: '#39DE2A', // 선의 색깔입니다
             strokeOpacity: 0.8, // 선의 불투명도 입니다 1에서 0 사이의 값이며 0에 가까울수록 투명합니다
@@ -46,27 +45,52 @@ const Kakao=()=>{
             fillColor: '#A2FF99', // 채우기 색깔입니다
             fillOpacity: 0.7 // 채우기 불투명도 입니다
         });
-        
         // 지도에 다각형을 표시합니다
-      const map = new kakao.maps.Map(container, options);
-      polygon.setMap(map);
-      
+      const map1 = new kakao.maps.Map(container.current, options);
+      setMap(map1);
+      polygon.setMap(map1);
+      var customOverlay=new kakao.maps.CustomOverlay({
+        // map: map, // 커스텀오버레이를 표시할 지도입니다 
+        content: content,  // 커스텀오버레이에 표시할 내용입니다
+        xAnchor: 0,
+        yAnchor: 0,
+        position: polygonPath[0]  // 커스텀오버레이를 표시할 위치입니다. 위치는 다각형의 마지막 좌표로 설정합니다
+    });   
+      kakao.maps.event.addListener(polygon,'mousedown',function(){
+        customOverlay.setMap(map1);
+        console.log('dd');
+      });
+    //   kakao.maps.event.addListener(polygon,'onclick',function(){
+    //     customOverlay.setMap(map1);
+    //   });
+      kakao.maps.event.addListener(polygon, 'mouseup', function () {
+        setTimeout(function () {
+          customOverlay.setMap();
+        });
+      });
 
     },[]);
+    
 
     return(
         <>
-            <Title>AIRFLOW</Title>
-            <div id="map" 
-            style={{textAlign:"center",display:"flex",width:"500px",height:"400px"}}
-            // onClick={navi} 
-            // onMouseDown={navi}
-            >
-
-            </div>
+            <Map 
+                ref={container}
+            />
         </>
 
     );
 }
 
+
+const Map = styled.div`
+  position: relative;
+  text-align: center;
+  width:100%;
+  height:30rem;
+`;
+
+const Detail=styled.div`
+    background-color: white;
+`;
 export default Kakao;
