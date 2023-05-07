@@ -25,6 +25,13 @@ const FindDistance = () => {
 
     console.log(positions)
 
+
+    //documentId로 도착지점 idx찾기
+    const endDocumentId = "4u1Hf963wZJiNjAODdwz";
+    const endIdx = positions.findIndex((position) => position.id === endDocumentId);
+    console.log(endIdx)
+    
+
     //인접행렬 초기화
     const adjacencyMatrix = [];
     for (let i = 0; i < positions.length; i++) {
@@ -38,8 +45,9 @@ const FindDistance = () => {
     positions.forEach((position1, index1) => {
         for (let index2 = 0; index2 < positions.length; index2++) {
             if(index1 == index2) continue; //자기 자신과의 거리는 0
-            console.log(index1, index2)
+            
             const position2 = positions[index2];
+            console.log(position1.info, position2.info)
             const distance = getDistanceFromLatLonInMeter(
                 position1.Latitude,
                 position1.Logitude,
@@ -83,15 +91,6 @@ const FindDistance = () => {
         }
     });
 
-    /*
-    console.log("첫번째 다익스트라 구현");
-    const start = 0; // 시작 지점
-    const end = 4; // 도착 지점
-    const shortestDistance = dijkstra(adjacencyMatrix, 0, 2); // s 지점에서 e 지점까지의 최단거리
-    console.log(shortestDistance);
-    */
-
-    console.log("두번째 다익스트라 구현")
     const start = 3;
     const end = 2;
     const shortestDistance = dijkstra(adjacencyMatrix, start, end);
