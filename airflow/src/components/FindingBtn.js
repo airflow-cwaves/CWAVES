@@ -5,7 +5,7 @@ import styled from "styled-components";
 const FindingBtn =({focus})=>{
     const nav=useNavigate();
     const onBtnClick=()=>{
-        nav('/pathfinding')
+        nav("/pathfinding");
     };
     return (
         <Btn onClick={onBtnClick}>
