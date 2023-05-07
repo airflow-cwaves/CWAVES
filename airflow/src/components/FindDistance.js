@@ -25,18 +25,12 @@ const FindDistance = () => {
 
     console.log(positions)
 
-    /*
-    // 인접 행렬 초기화
-    const adjacencyMatrix = new Array(positions.length)
-        .fill(null)
-        .map(() => new Array(positions.length).fill(null));
-    */
-
+    //인접행렬 초기화
     const adjacencyMatrix = [];
     for (let i = 0; i < positions.length; i++) {
         adjacencyMatrix[i] = [];
         for (let j = 0; j < positions.length; j++) {
-            adjacencyMatrix[i][j] = 0; // 거리 값은 0으로 초기화
+            adjacencyMatrix[i][j] = 0; //인접행렬 0으로 초기화
         }
     }
 
@@ -50,21 +44,43 @@ const FindDistance = () => {
                 position2.Latitude,
                 position2.Logitude
             );
-            // 거리가 100 이상일 때 인접 행렬에 저장
-            // if (distance >= 100) {
-            //adjacencyMatrix[index1][index2] = position2;
-            //adjacencyMatrix[index2][index1] = position1;
+            
+            let tmp_temp = 0; 
+            if(position2.Temperature >= 26 && position2.Temperature <30){ //에어컨 적정온도
+                tmp_temp += position2.Temperature;
+            }
+            else if(position2.Temperature >= 30 && position2.Temperature <33){
+                tmp_temp += position2.Temperature*10;
+            }
+            else if(position2.Temperature >= 33 && position2.Temperature <36){ //폭염 주의보
+                tmp_temp += position2.Temperature*20;
+            }
+            else if(position2.Temperature >= 36){ //폭염 경보 
+                tmp_temp += position2.Temperature*40;
+            }
+
+            let tmp_dust = 0; 
+            if(position2.Dust >= 16 && position2.Dust <= 35){
+                tmp_dust += position2.Dust; 
+            }
+            else if(position2.Dust > 35 && position2.Dust <=75){
+                tmp_dust += position2.Dust*2;
+            }
+            else if(position2.Dust > 75){
+                tmp_dust += position2.Dust*10;
+            }
+
+            //adjacencyMatrix[index1][index2] = distance + tmp_temp + tmp_dust;
+            adjacencyMatrix[index2][index1] = distance + tmp_temp + tmp_dust;
 
             if(distance <= 100){
-                adjacencyMatrix[index1][index2] = distance;
-                adjacencyMatrix[index2][index1] = distance;
+                adjacencyMatrix[index1][index2] = distance + tmp_temp + tmp_dust;
+                adjacencyMatrix[index2][index1] = distance + tmp_temp + tmp_dust;
             }
             else{
-                adjacencyMatrix[index1][index2] = 999999999;
-                adjacencyMatrix[index2][index1] = 999999999;
+                adjacencyMatrix[index1][index2] = 99999999;
+                adjacencyMatrix[index2][index1] = 99999999;
             }
-            
-            // }
         }
     });
 
@@ -77,8 +93,8 @@ const FindDistance = () => {
     */
 
     console.log("두번째 다익스트라 구현")
-    const start = 0;
-    const end = 4;
+    const start = 3;
+    const end = 2;
     const shortestDistance = dijkstra(adjacencyMatrix, start, end);
     const path = shortestDistance.join(" -> "); // 최단경로 출력
     console.log(`최단거리: ${shortestDistance[end]}, 최단경로: ${path}`);

@@ -7,6 +7,7 @@ import {
 import Pathfinding from "../pages/Pathfinding";
 import Home from "../pages/Home";
 import DistanceCalculator from "../pages/DistanceCalculator";
+import FindDistance from "./FindDistance";
 
 const AppRouter = () => {
   return (
@@ -16,6 +17,9 @@ const AppRouter = () => {
         </Routes>
         <Routes>
             <Route exact path="/distance" element={<DistanceCalculator/>} />
+        </Routes>
+        <Routes>
+            <Route exact path="/distance2" element={<FindDistance/>} />
         </Routes>
         <Routes>
             <Route exact path="/pathfinding" element={<Pathfinding/>} />
