@@ -7,12 +7,11 @@ import { Link } from 'react-router-dom';
 
 const { kakao } = window;
 
-const FindDistance = ({id, map}) => {
-    const [idx,setIdx]=useState();
+const FindDistance = ({ endDocId, map }) => {
     const [positions, setPositions] = useState([]);
-    const [isdone,setIsDone]=useState(false);
+    const [isdone, setIsDone] = useState(false);
     useEffect(() => {
-        dbService.collection("airflow2")
+        dbService.collection("airflow")
             .where("Check", "==", true)
             .get()
             .then((querySnapshot) => {
@@ -22,13 +21,16 @@ const FindDistance = ({id, map}) => {
                         ...doc.data(),
                     };
                     setPositions((positions) => [parray, ...positions]);
+                });
+                setIsDone(true);
             });
-            setIsDone(true);
-        });
-    },[]);
-        // console.log(positions)
-    useEffect(()=>{
-            //자기위치(위도, 경도) 주어졌을 때 가까운 지점 idx찾기
+    }, []);
+    
+    console.log(positions)
+    
+    useEffect(() => {
+        if(isdone){
+                  //자기위치(위도, 경도) 주어졌을 때 가까운 지점 idx찾기
         const startLatitude = 37.544661;
         const startLongitude = 126.966189;
 
@@ -51,7 +53,8 @@ const FindDistance = ({id, map}) => {
         console.log(startIdx)
 
         //documentId로 도착지점 idx찾기
-        const endDocumentId = "4u1Hf963wZJiNjAODdwz";
+        const endDocumentId = endDocId;
+        console.log(endDocId)
         const endIdx = positions.findIndex((position) => position.id === endDocumentId);
         console.log(endIdx)
 
@@ -67,7 +70,8 @@ const FindDistance = ({id, map}) => {
 
         console.log(adjacencyMatrix)
         positions.forEach((position1, index1) => {
-            for (let index2 = index1 + 1; index2 < positions.length; index2++) {
+            for (let index2 = 0; index2 < positions.length; index2++) {
+                if(index1 == index2) continue; //자기 자신과의 거리는 0
                 const position2 = positions[index2];
                 const distance = getDistanceFromLatLonInMeter(
                     position1.Latitude,
@@ -75,30 +79,30 @@ const FindDistance = ({id, map}) => {
                     position2.Latitude,
                     position2.Logitude
                 );
-                
-                let tmp_temp = 0; 
-                if(position2.Temperature >= 26 && position2.Temperature <30){ //에어컨 적정온도
+
+                let tmp_temp = 0;
+                if (position2.Temperature >= 26 && position2.Temperature < 30) { //에어컨 적정온도
                     tmp_temp += position2.Temperature;
                 }
-                else if(position2.Temperature >= 30 && position2.Temperature <33){
-                    tmp_temp += position2.Temperature*10;
+                else if (position2.Temperature >= 30 && position2.Temperature < 33) {
+                    tmp_temp += position2.Temperature * 10;
                 }
-                else if(position2.Temperature >= 33 && position2.Temperature <36){ //폭염 주의보
-                    tmp_temp += position2.Temperature*20;
+                else if (position2.Temperature >= 33 && position2.Temperature < 36) { //폭염 주의보
+                    tmp_temp += position2.Temperature * 20;
                 }
-                else if(position2.Temperature >= 36){ //폭염 경보 
-                    tmp_temp += position2.Temperature*40;
+                else if (position2.Temperature >= 36) { //폭염 경보 
+                    tmp_temp += position2.Temperature * 40;
                 }
 
-                let tmp_dust = 0; 
-                if(position2.Dust >= 16 && position2.Dust <= 35){
-                    tmp_dust += position2.Dust; 
+                let tmp_dust = 0;
+                if (position2.Dust >= 16 && position2.Dust <= 35) {
+                    tmp_dust += position2.Dust;
                 }
-                else if(position2.Dust > 35 && position2.Dust <=75){
-                    tmp_dust += position2.Dust*2;
+                else if (position2.Dust > 35 && position2.Dust <= 75) {
+                    tmp_dust += position2.Dust * 2;
                 }
-                else if(position2.Dust > 75){
-                    tmp_dust += position2.Dust*10;
+                else if (position2.Dust > 75) {
+                    tmp_dust += position2.Dust * 10;
                 }
 
                 if (distance <= 100) {
@@ -117,9 +121,9 @@ const FindDistance = ({id, map}) => {
         const shortestDistance = dijkstra(adjacencyMatrix, start, end);
         const path = shortestDistance.join(" -> "); // 최단경로 출력
         console.log(`최단거리: ${shortestDistance[end]}, 최단경로: ${path}`);
-        var arr1=[];
-        for(var i=1;i<shortestDistance.length-1;i++){
-            arr1.push(new kakao.maps.LatLng(positions[shortestDistance[i]].Latitude,positions[shortestDistance[i]].Logitude));
+        var arr1 = [];
+        for (var i = 1; i < shortestDistance.length - 1; i++) {
+            arr1.push(new kakao.maps.LatLng(positions[shortestDistance[i]].Latitude, positions[shortestDistance[i]].Logitude));
         }
         console.log(arr1);
         // 지도에 표시할 선을 생성합니다
@@ -131,7 +135,9 @@ const FindDistance = ({id, map}) => {
             strokeStyle: 'solid' // 선의 스타일입니다
         });
         // 지도에 선을 표시합니다 
-        polyline.setMap(map);  
+        polyline.setMap(map);
+        }
+  
     }, [isdone]);
 
     return (
@@ -164,43 +170,6 @@ function getDistanceFromLatLonInMeter(lat1, lon1, lat2, lon2) {
 function deg2rad(deg) {
     return deg * (Math.PI / 180);
 }
-
-/*
-function dijkstra(adjacencyMatrix, start, end) {
-    const n = adjacencyMatrix.length;
-
-    // 초기화
-    const dist = new Array(n).fill(Number.MAX_SAFE_INTEGER);
-    const visited = new Array(n).fill(false);
-    const via = new Array(n).fill(null);
-    dist[start] = 0;
-
-    // 다익스트라 알고리즘
-    for (let i = 0; i < n - 1; i++) {
-        // 현재까지 방문하지 않은 정점 중에서 가장 가까운 정점을 선택
-        let minDistance = Number.MAX_SAFE_INTEGER;
-        let u;
-        for (let j = 0; j < n; j++) {
-            if (!visited[j] && dist[j] < minDistance) {
-                minDistance = dist[j];
-                u = j;
-            }
-        }
-
-        // 가장 가까운 정점 방문
-        visited[u] = true;
-
-        // 방문한 정점과 인접한 정점들의 최단거리 갱신
-        for (let v = 0; v < n; v++) {
-            if (!visited[v] && adjacencyMatrix[u][v] !== 0) {
-                dist[v] = Math.min(dist[v], dist[u] + adjacencyMatrix[u][v]);
-            }
-        }
-    }
-
-    return dist[end];
-}
-*/
 
 function dijkstra(adjacencyMatrix, start, end) {
     const n = adjacencyMatrix.length;

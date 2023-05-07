@@ -77,8 +77,8 @@ const EcoMap=({position, map})=>{
         <>
             {eco &&
                 <FindDistance
-                    // map={map}
-                    // id={position.id}
+                    map={map}
+                    endDocId={position.id}
                 />
             }
         </>
