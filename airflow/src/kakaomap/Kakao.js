@@ -5,15 +5,25 @@ import { dbService } from "../firebase";
 import Visualization from "../components/Visualization";
 
 const { kakao } = window;
-var colorList=['#FD9D9D','#FDEE9D','#AFCDAA', '#9DC4FD']
-var strokeList=['#FE8080','#FEEA80','#96AC8E', '#80A3FE']
+var colorList=['#FD9D9D','#FDEE9D','#AFCDAA', '#9DC4FD','white']
+var strokeList=['#FE8080','#FEEA80','#96AC8E', '#80A3FE','white']
 
 const Kakao=()=>{
     const container = useRef(<Map/>);
     const [positions,setPositions]=useState([]);
     const [map,setMap]=useState(null);
-    var type=0;
-    var categoryList= ['고온','미세먼지','유해가스','건조'];
+    const [c,setC]=useState(null);
+    var type=5;
+    var categoryList= ['고온','미세먼지','유해가스','건조','전체'];
+    const onCategoryClick=(category)=>{
+        if(category===4){
+            setPositions([]);
+            setC(null);
+        }else{
+            setC(category);
+            setPositions([]);
+        }
+    };
     useEffect(()=>{
         dbService.collection("airflow")
         .where("Check","==",true)
@@ -22,8 +32,8 @@ const Kakao=()=>{
             querySnapshot.forEach((doc)=>{
                 if(doc.data().Temperature>=33) type=0;
                 else if(doc.data().Dust>=36) type=1;
-                else if(doc.data().Gas>20) type=2;
-                else if(doc.data().Humidity>65) type=3;
+                else if(doc.data().Gas>23) type=2;
+                else if(doc.data().Humidity<=35) type=3;
                 const parray= {
                     id:doc.id,
                     ...doc.data(),
@@ -36,20 +46,19 @@ const Kakao=()=>{
             center: new kakao.maps.LatLng(37.545472, 126.965074),
             level: 3
         };
-        
         // 지도에 다각형을 표시합니다
-      const map1 = new kakao.maps.Map(container.current, options);
-      setMap(map1);
+        const map1 = new kakao.maps.Map(container.current, options);
+        setMap(map1);
 
-    },[]);
-    
+    },[c]);
 
     return(
         <>
         <Map ref={container}>
             <CateList>
                 {categoryList.map((category)=>(
-                    <Category 
+                    <Category
+                        onClick={()=>onCategoryClick(categoryList.indexOf(category))} 
                         i={categoryList.indexOf(category)}
                         key={categoryList.indexOf(category)}>
                         {category}
@@ -63,6 +72,7 @@ const Kakao=()=>{
                         position={position}
                         map={map}
                         type={position.type}
+                        isCheck={c}
                     />
                 ))
             }
