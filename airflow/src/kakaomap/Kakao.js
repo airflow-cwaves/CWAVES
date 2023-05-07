@@ -13,24 +13,17 @@ const Kakao=()=>{
     const [positions,setPositions]=useState([]);
     const [map,setMap]=useState(null);
     var type=0;
-    var categoryList= ['고온','미세먼지 고농도','유해가스 고농도','다습'];
+    var categoryList= ['고온','미세먼지','유해가스','건조'];
     useEffect(()=>{
         dbService.collection("airflow")
         .where("Check","==",true)
         .get()
         .then((querySnapshot)=>{
             querySnapshot.forEach((doc)=>{
-                if(doc.data().Temperature>23){
-                    type=0;
-                }else if(doc.data().Dust>23.5){
-                    type=1;
-                }
-                else if(doc.data().Gas>17){
-                    type=2;
-                }
-                else if(doc.data().Humidity>65){
-                    type=3;
-                }
+                if(doc.data().Temperature>=33) type=0;
+                else if(doc.data().Dust>=36) type=1;
+                else if(doc.data().Gas>20) type=2;
+                else if(doc.data().Humidity>65) type=3;
                 const parray= {
                     id:doc.id,
                     ...doc.data(),

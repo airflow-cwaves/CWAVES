@@ -13,10 +13,21 @@ const Visualization=({position,map,type})=>{
     //     stC='#39DE2A';
     //     fC='#A2FF99';
     // }
+
     var colorList=['#FD9D9D','#FDEE9D','#AFCDAA', '#9DC4FD'];
     var strokeList=['#FE8080','#FEEA80','#96AC8E', '#80A3FE'];
-    var categoryList= ['고온','미세먼지 고농도','유해가스 고농도','다습'];
-
+    var categoryList= ['온도','미세먼지 수치','유해가스 수치','습도',"℃","ug/m^3","ppm","%"];
+    var categoryList1 = ['Temperature','Dust','Gas','Humidity'];
+    var a= categoryList1[type];
+    var content= categoryList[type] +": <br>"
+        +position[a]+categoryList[type+4];
+    if(type===1){
+        if(position[a]<=75){
+            content= content+" (나쁨)";
+        }else{
+            content= content+" (아주나쁨)";
+        }
+    }
     var polygon = new kakao.maps.Circle({
         // path:polygonPath, // 그려질 다각형의 좌표 배열입니다
         center: new kakao.maps.LatLng(position.Latitude, position.Logitude),
@@ -31,7 +42,7 @@ const Visualization=({position,map,type})=>{
     polygon.setMap(map);
     var customOverlay=new kakao.maps.CustomOverlay({
         // map: map, // 커스텀오버레이를 표시할 지도입니다 
-        content: categoryList[type],  // 커스텀오버레이에 표시할 내용입니다
+        content: content,  // 커스텀오버레이에 표시할 내용입니다
         xAnchor: 0,
         yAnchor: 0,
         position: new kakao.maps.LatLng(position.Latitude, position.Logitude)  // 커스텀오버레이를 표시할 위치입니다. 위치는 다각형의 마지막 좌표로 설정합니다
