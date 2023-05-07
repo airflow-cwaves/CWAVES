@@ -5,7 +5,7 @@ import styled from "styled-components";
 const MapBtn=({focus})=>{
     const nav=useNavigate();
     const onBtnClick=()=>{
-        nav("/main");
+        nav("/");
     }
 
     console.log(focus);

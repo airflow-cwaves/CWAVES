@@ -1,6 +1,7 @@
 import React from "react";
 import { BrowserRouter, Routes } from "react-router-dom";
 import {
+  HashRouter as Router,
   Route,
 } from "react-router-dom";
 import Pathfinding from "../pages/Pathfinding";
@@ -10,7 +11,7 @@ const AppRouter = () => {
   return (
     <BrowserRouter>
         <Routes>
-            <Route exact path="/main" element={<Home/>} />
+            <Route exact path="/" element={<Home/>} />
         </Routes>
         <Routes>
             <Route exact path="/pathfinding" element={<Pathfinding/>} />
