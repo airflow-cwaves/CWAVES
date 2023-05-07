@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
@@ -32,3 +32,5 @@ const Content =styled.div`
 const Img=styled.img`
     filter: ${props=> props.f &&'invert(42%) sepia(12%) saturate(1844%) hue-rotate(65deg) brightness(95%) contrast(84%);'};
 `;
+
+

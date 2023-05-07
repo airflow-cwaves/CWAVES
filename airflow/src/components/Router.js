@@ -6,6 +6,7 @@ import {
 } from "react-router-dom";
 import Pathfinding from "../pages/Pathfinding";
 import Home from "../pages/Home";
+import UserGuide from "../pages/UserGuide";
 
 const AppRouter = () => {
   return (
@@ -15,6 +16,9 @@ const AppRouter = () => {
         </Routes>
         <Routes>
             <Route exact path="/pathfinding" element={<Pathfinding/>} />
+        </Routes>
+        <Routes>
+            <Route exact path="/guide" element={<UserGuide/>} />
         </Routes>
     </BrowserRouter>
   );
