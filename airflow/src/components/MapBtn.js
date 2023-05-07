@@ -2,25 +2,28 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
-const FindingBtn =()=>{
+const MapBtn=()=>{
     const nav=useNavigate();
     const onBtnClick=()=>{
-        nav('/pathfinding')
-    };
-    return (
+        nav('/main')
+    }
+
+    return(
         <Btn onClick={onBtnClick}>
-            <img src="img/path.png" alt="pathfinding"  width="20px" height="25px"/>
+            <img src="img/pin.png" alt="mainmap" width="20px" height="25px"/>
             <div>
-                길찾기
+                실시간지도
             </div>
         </Btn>
-    );
+    )
+}
 
-};
-
-export default FindingBtn;
+export default MapBtn;
 
 const Btn =styled.div`
     margin: 7px 0;
-    width: fit-content;
+    width: 25vw;
+`;
+const Content =styled.div`
+
 `;

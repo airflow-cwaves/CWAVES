@@ -2,23 +2,23 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
-const FindingBtn =()=>{
+const HistoryBtn=()=>{
     const nav=useNavigate();
     const onBtnClick=()=>{
-        nav('/pathfinding')
-    };
-    return (
+        window.alert('서비스 준비 중입니다.');
+        // nav('/history');
+    }
+    return(
         <Btn onClick={onBtnClick}>
-            <img src="img/path.png" alt="pathfinding"  width="20px" height="25px"/>
+            <img src="img/log.png" alt="history"  width="25px" height="25px"/>
             <div>
-                길찾기
+                예전기록
             </div>
         </Btn>
-    );
+    )
+}
 
-};
-
-export default FindingBtn;
+export default HistoryBtn;
 
 const Btn =styled.div`
     margin: 7px 0;
