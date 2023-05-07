@@ -36,7 +36,9 @@ const FindDistance = () => {
 
     console.log(adjacencyMatrix)
     positions.forEach((position1, index1) => {
-        for (let index2 = index1 + 1; index2 < positions.length; index2++) {
+        for (let index2 = 0; index2 < positions.length; index2++) {
+            if(index1 == index2) continue; //자기 자신과의 거리는 0
+            console.log(index1, index2)
             const position2 = positions[index2];
             const distance = getDistanceFromLatLonInMeter(
                 position1.Latitude,
@@ -70,16 +72,13 @@ const FindDistance = () => {
                 tmp_dust += position2.Dust*10;
             }
 
-            //adjacencyMatrix[index1][index2] = distance + tmp_temp + tmp_dust;
-            adjacencyMatrix[index2][index1] = distance + tmp_temp + tmp_dust;
-
             if(distance <= 100){
-                adjacencyMatrix[index1][index2] = distance + tmp_temp + tmp_dust;
-                adjacencyMatrix[index2][index1] = distance + tmp_temp + tmp_dust;
+                adjacencyMatrix[index1][index2] = distance + tmp_temp + tmp_dust; //시작 index1 -> 도착 end1
+                //adjacencyMatrix[index2][index1] = distance + tmp_temp + tmp_dust;
             }
             else{
-                adjacencyMatrix[index1][index2] = 99999999;
-                adjacencyMatrix[index2][index1] = 99999999;
+                adjacencyMatrix[index1][index2] = 99999999; //시작 index1 -> 도착 end1
+                //adjacencyMatrix[index2][index1] = 99999999;
             }
         }
     });
