@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from "react";
+import FindDistance from './FindDistance';
 const { kakao } = window;
 
-const EcoMap=({position, map,pid})=>{
+const EcoMap=({position, map})=>{
     const [place,setPlace]=useState();
+    const [eco,setEco]=useState(false);
     var geocoder = new kakao.maps.services.Geocoder();
     var ps = new kakao.maps.services.Places();  
     function makeOverListener(map, marker, infowindow) {
@@ -10,8 +12,9 @@ const EcoMap=({position, map,pid})=>{
             infowindow.open(map, marker);
             var s= document.getElementById('eco');
             s.addEventListener("click",function(){
-                console.log("Wow");
-                window.alert("에코길찾기 알고리즘실행하기");
+                setEco(true);
+                // console.log(position.id);
+                // window.alert("에코길찾기 알고리즘실행하기");
             })
         };
     }
@@ -72,7 +75,12 @@ const EcoMap=({position, map,pid})=>{
 
     return (
         <>
-    
+            {eco &&
+                <FindDistance
+                    // map={map}
+                    // id={position.id}
+                />
+            }
         </>
     );
 };
