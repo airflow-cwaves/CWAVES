@@ -6,9 +6,13 @@ import {
 } from "react-router-dom";
 import Pathfinding from "../pages/Pathfinding";
 import Home from "../pages/Home";
+
+import UserGuide from "../pages/UserGuide";
+
 import DistanceCalculator from "../pages/DistanceCalculator";
 import FindDistance from "./FindDistance";
 import MyLocation from "./MyLocation";
+
 
 const AppRouter = () => {
   return (
@@ -26,7 +30,12 @@ const AppRouter = () => {
             <Route exact path="/pathfinding" element={<Pathfinding/>} />
         </Routes>
         <Routes>
+
+            <Route exact path="/guide" element={<UserGuide/>} />
+</Routes>
+<Routes>
             <Route exact path="/mylocation" element={<MyLocation/>} />
+
         </Routes>
     </BrowserRouter>
   );
