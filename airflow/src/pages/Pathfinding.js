@@ -52,8 +52,8 @@ const Pathfinding=()=>{
                 </Map>
                 <Btn>
                     <HistoryBtn />
-                    <MapBtn />
-                    <FindingBtn/>            
+                    <MapBtn focus={false}/>
+                    <FindingBtn focus={true} />            
                 </Btn>
             </Box>
         </Container>
