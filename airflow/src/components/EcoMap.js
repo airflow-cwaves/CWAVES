@@ -5,7 +5,6 @@ const EcoMap=({position, map,pid})=>{
     const [place,setPlace]=useState();
     var geocoder = new kakao.maps.services.Geocoder();
     var ps = new kakao.maps.services.Places();  
-
     function makeOverListener(map, marker, infowindow) {
         return function() {
             infowindow.open(map, marker);

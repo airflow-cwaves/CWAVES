@@ -5,12 +5,15 @@ import { dbService } from "../firebase";
 import Visualization from "../components/Visualization";
 
 const { kakao } = window;
+var colorList=['#FD9D9D','#FDEE9D','#AFCDAA', '#9DC4FD']
+var strokeList=['#FE8080','#FEEA80','#96AC8E', '#80A3FE']
 
 const Kakao=()=>{
     const container = useRef(<Map/>);
     const [positions,setPositions]=useState([]);
     const [map,setMap]=useState(null);
-
+    var type=0;
+    var categoryList= ['고온','미세먼지 고농도','유해가스 고농도','다습'];
     useEffect(()=>{
         dbService.collection("airflow")
         .where("Check","==",true)
@@ -18,21 +21,22 @@ const Kakao=()=>{
         .then((querySnapshot)=>{
             querySnapshot.forEach((doc)=>{
                 if(doc.data().Temperature>23){
-                    const parray= {
-                        id:doc.id,
-                        ...doc.data(),
-                        type:"temp",
-                    };
-                    setPositions((positions)=>[parray,...positions]);
-                }else if(doc.data().Humidity>65){
-                    const parray= {
-                        id:doc.id,
-                        ...doc.data(),
-                        type:"hum",
-                    };
-                    setPositions((positions)=>[parray,...positions]);
+                    type=0;
+                }else if(doc.data().Dust>23.5){
+                    type=1;
                 }
-
+                else if(doc.data().Gas>17){
+                    type=2;
+                }
+                else if(doc.data().Humidity>65){
+                    type=3;
+                }
+                const parray= {
+                    id:doc.id,
+                    ...doc.data(),
+                    type:type,
+                };
+                setPositions((positions)=>[parray,...positions]);
             });
         });
         const options = {
@@ -48,7 +52,17 @@ const Kakao=()=>{
     
 
     return(
+        <>
         <Map ref={container}>
+            <CateList>
+                {categoryList.map((category)=>(
+                    <Category 
+                        i={categoryList.indexOf(category)}
+                        key={categoryList.indexOf(category)}>
+                        {category}
+                    </Category>
+                ))}
+            </CateList>
             {positions&&
                 positions.map((position)=>(
                     <Visualization
@@ -61,6 +75,9 @@ const Kakao=()=>{
             }
         </Map>
 
+        
+        </>
+        
     );
 }
 
@@ -72,6 +89,23 @@ const Map = styled.div`
   text-align: center;
   /* width:100%; */
   height:100vh;
+`;
+const Category =styled.div`
+    position: relative;
+    top: 10px;
+    z-index: 2;
+    margin: 0 2px;
+    padding: 2px 4px;
+    width: fit-content;
+    background-color: white;
+    border-radius: 10px;
+    background-color: ${props=> colorList[props.i]};
+    border: ${props=> strokeList[props.i]};
+    box-shadow: 0px 0px 5px grey;
+`;
+const CateList=styled.div`
+    display: inline-flex;
+    justify-content: space-around;
 `;
 
 export default Kakao;
