@@ -6,6 +6,7 @@ const HistoryBtn=()=>{
     const nav=useNavigate();
     const onBtnClick=()=>{
         nav('/guide');
+
     }
     return(
         <Btn onClick={onBtnClick}>
