@@ -8,6 +8,7 @@ import Pathfinding from "../pages/Pathfinding";
 import Home from "../pages/Home";
 import DistanceCalculator from "../pages/DistanceCalculator";
 import FindDistance from "./FindDistance";
+import MyLocation from "./MyLocation";
 
 const AppRouter = () => {
   return (
@@ -23,6 +24,9 @@ const AppRouter = () => {
         </Routes>
         <Routes>
             <Route exact path="/pathfinding" element={<Pathfinding/>} />
+        </Routes>
+        <Routes>
+            <Route exact path="/mylocation" element={<MyLocation/>} />
         </Routes>
     </BrowserRouter>
   );
