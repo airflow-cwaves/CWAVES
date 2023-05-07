@@ -5,8 +5,8 @@ import styled from "styled-components";
 const HistoryBtn=()=>{
     const nav=useNavigate();
     const onBtnClick=()=>{
-        window.alert('서비스 준비 중입니다.');
-        // nav('/history');
+        //window.alert('서비스 준비 중입니다.');
+        nav('/mylocation');
     }
     return(
         <Btn onClick={onBtnClick}>
