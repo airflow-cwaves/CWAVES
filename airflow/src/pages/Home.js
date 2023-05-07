@@ -15,7 +15,7 @@ const Home =()=>{
             <Box>
                 <Kakao/>
                 <Btn>
-                    <HistoryBtn />
+                    <HistoryBtn focus={false} />
                     <MapBtn focus={true}/>
                     <FindingBtn focus={false} />            
                 </Btn>
