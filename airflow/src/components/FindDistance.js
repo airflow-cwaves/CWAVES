@@ -25,6 +25,33 @@ const FindDistance = () => {
 
     console.log(positions)
 
+    //자기위치(위도, 경도) 주어졌을 때 가까운 지점 idx찾기
+    const startLatitude = 37.544661;
+    const startLongitude = 126.966189;
+
+    //같은 위도 찾는 법
+    //const startIdx = positions.findIndex((position) => position.Latitude === startLatitude && position.Logitude === startLongitude);
+
+    //가장 가까운 지점 찾기
+    let min = 99999999;
+    let startIdx = -1;
+    for (let i = 0; i < positions.length; i++) {
+        const distance = getDistanceFromLatLonInMeter(
+            startLatitude, startLongitude, positions[i].Latitude, positions[i].Logitude
+        );
+
+        if (min > distance) {
+            min = distance;
+            startIdx = i;
+        }
+    }
+    console.log(startIdx)
+
+    //documentId로 도착지점 idx찾기
+    const endDocumentId = "4u1Hf963wZJiNjAODdwz";
+    const endIdx = positions.findIndex((position) => position.id === endDocumentId);
+    console.log(endIdx)
+
     //인접행렬 초기화
     const adjacencyMatrix = [];
     for (let i = 0; i < positions.length; i++) {
@@ -36,7 +63,8 @@ const FindDistance = () => {
 
     console.log(adjacencyMatrix)
     positions.forEach((position1, index1) => {
-        for (let index2 = index1 + 1; index2 < positions.length; index2++) {
+        for (let index2 = 0; index2 < positions.length; index2++) {
+            if (index1 == index2) continue; //자기 자신과의 거리는 0
             const position2 = positions[index2];
             const distance = getDistanceFromLatLonInMeter(
                 position1.Latitude,
@@ -44,55 +72,43 @@ const FindDistance = () => {
                 position2.Latitude,
                 position2.Logitude
             );
-            
-            let tmp_temp = 0; 
-            if(position2.Temperature >= 26 && position2.Temperature <30){ //에어컨 적정온도
+
+            let tmp_temp = 0;
+            if (position2.Temperature >= 26 && position2.Temperature < 30) { //에어컨 적정온도
                 tmp_temp += position2.Temperature;
             }
-            else if(position2.Temperature >= 30 && position2.Temperature <33){
-                tmp_temp += position2.Temperature*10;
+            else if (position2.Temperature >= 30 && position2.Temperature < 33) {
+                tmp_temp += position2.Temperature * 10;
             }
-            else if(position2.Temperature >= 33 && position2.Temperature <36){ //폭염 주의보
-                tmp_temp += position2.Temperature*20;
+            else if (position2.Temperature >= 33 && position2.Temperature < 36) { //폭염 주의보
+                tmp_temp += position2.Temperature * 20;
             }
-            else if(position2.Temperature >= 36){ //폭염 경보 
-                tmp_temp += position2.Temperature*40;
-            }
-
-            let tmp_dust = 0; 
-            if(position2.Dust >= 16 && position2.Dust <= 35){
-                tmp_dust += position2.Dust; 
-            }
-            else if(position2.Dust > 35 && position2.Dust <=75){
-                tmp_dust += position2.Dust*2;
-            }
-            else if(position2.Dust > 75){
-                tmp_dust += position2.Dust*10;
+            else if (position2.Temperature >= 36) { //폭염 경보 
+                tmp_temp += position2.Temperature * 40;
             }
 
-            //adjacencyMatrix[index1][index2] = distance + tmp_temp + tmp_dust;
-            adjacencyMatrix[index2][index1] = distance + tmp_temp + tmp_dust;
-
-            if(distance <= 100){
-                adjacencyMatrix[index1][index2] = distance + tmp_temp + tmp_dust;
-                adjacencyMatrix[index2][index1] = distance + tmp_temp + tmp_dust;
+            let tmp_dust = 0;
+            if (position2.Dust >= 16 && position2.Dust <= 35) {
+                tmp_dust += position2.Dust;
             }
-            else{
-                adjacencyMatrix[index1][index2] = 99999999;
-                adjacencyMatrix[index2][index1] = 99999999;
+            else if (position2.Dust > 35 && position2.Dust <= 75) {
+                tmp_dust += position2.Dust * 2;
+            }
+            else if (position2.Dust > 75) {
+                tmp_dust += position2.Dust * 10;
+            }
+
+            if (distance <= 100) {
+                adjacencyMatrix[index1][index2] = distance + tmp_temp + tmp_dust; //시작 index1 -> 도착 end1
+                //adjacencyMatrix[index2][index1] = distance + tmp_temp + tmp_dust;
+            }
+            else {
+                adjacencyMatrix[index1][index2] = 99999999; //시작 index1 -> 도착 end1
+                //adjacencyMatrix[index2][index1] = 99999999;
             }
         }
     });
 
-    /*
-    console.log("첫번째 다익스트라 구현");
-    const start = 0; // 시작 지점
-    const end = 4; // 도착 지점
-    const shortestDistance = dijkstra(adjacencyMatrix, 0, 2); // s 지점에서 e 지점까지의 최단거리
-    console.log(shortestDistance);
-    */
-
-    console.log("두번째 다익스트라 구현")
     const start = 3;
     const end = 2;
     const shortestDistance = dijkstra(adjacencyMatrix, start, end);

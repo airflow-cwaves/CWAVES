@@ -10,6 +10,9 @@ function MyLocation() {
             userDecisionTimeout: 5000,
         });
 
+    //위도: coords.latitude
+    //경도: coords.longitude
+
     return !isGeolocationAvailable ? (
         <div>Your browser does not support Geolocation</div>
     ) : !isGeolocationEnabled ? (
@@ -42,33 +45,6 @@ function MyLocation() {
     ) : (
         <div>Getting the location data&hellip; </div>
     );
-    /*
-    const [position, setPosition] = useState({});
-
-    useEffect(() => {
-        if (props.coords) {
-            setPosition({
-                latitude: props.coords.latitude,
-                longitude: props.coords.longitude,
-            });
-        }
-    }, [props.coords]);
-
-    return (
-        <div>
-            <h2>My Location</h2>
-            {position.latitude && position.longitude ? (
-                <p>
-                    위치
-                </p>
-            ) : (
-                <p>Fetching location...</p>
-            )}
-        </div>
-    );
-    */
 }
 
 export default MyLocation;
-
-//My current position is ({position.latitude}, {position.longitude})
