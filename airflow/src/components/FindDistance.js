@@ -12,7 +12,7 @@ const FindDistance = ({ endDocId, map }) => {
     const [positions, setPositions] = useState([]);
     const [isdone, setIsDone] = useState(false);
     useEffect(() => {
-        dbService.collection("airflow")
+        dbService.collection("airflow2")
             .where("Check", "==", true)
             .get()
             .then((querySnapshot) => {
