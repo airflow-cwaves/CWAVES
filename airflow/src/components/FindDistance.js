@@ -35,12 +35,19 @@ const FindDistance = ({ endDocId, map }) => {
             userDecisionTimeout: 5000,
         });
     useEffect(() => {
-        if(isdone && coords.latitude && coords.longitude){
+        if(isdone){
+            var startLatitude, startLongitude;
+            if(isGeolocationEnabled && isGeolocationAvailable){
+                startLatitude = coords.latitude;
+                startLongitude = coords.longitude;
+            }else{
+                startLatitude = 37.544661;
+                startLongitude = 126.966189;
+            }
             
             //자기위치(위도, 경도) 주어졌을 때 가까운 지점 idx찾기
         
-            const startLatitude = coords.latitude;
-            const startLongitude = coords.longitude;
+            
 
             //같은 위도 찾는 법
             //const startIdx = positions.findIndex((position) => position.Latitude === startLatitude && position.Logitude === startLongitude);
