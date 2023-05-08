@@ -11,6 +11,10 @@ const { kakao } = window;
 const FindDistance = ({ endDocId, map }) => {
     const [positions, setPositions] = useState([]);
     const [isdone, setIsDone] = useState(false);
+    const [isWhere, setIsWhere] = useState(false);
+    const [startLatitude,setStartLatitude]=useState();
+    const [startLongitude,setStartLongitude]=useState();
+    
     useEffect(() => {
         dbService.collection("airflow2")
             .where("Check", "==", true)
@@ -35,19 +39,9 @@ const FindDistance = ({ endDocId, map }) => {
             userDecisionTimeout: 5000,
         });
     useEffect(() => {
-        if(isdone){
-            var startLatitude, startLongitude;
-            if(isGeolocationEnabled && isGeolocationAvailable){
-                startLatitude = coords.latitude;
-                startLongitude = coords.longitude;
-            }else{
-                startLatitude = 37.544661;
-                startLongitude = 126.966189;
-            }
+        if(isdone&&startLatitude,startLongitude){
             
             //자기위치(위도, 경도) 주어졌을 때 가까운 지점 idx찾기
-        
-            
 
             //같은 위도 찾는 법
             //const startIdx = positions.findIndex((position) => position.Latitude === startLatitude && position.Logitude === startLongitude);
@@ -151,7 +145,18 @@ const FindDistance = ({ endDocId, map }) => {
             polyline.setMap(map);
         }
   
-    }, [isdone, coords]);
+    }, [isdone,startLatitude,startLongitude]);
+
+    useEffect(()=>{
+        if(coords){
+            setStartLatitude(coords.latitude);
+            setStartLongitude(coords.longitude);
+            // setIsWhere(true);
+        }else if(!isGeolocationEnabled ||!isGeolocationAvailable){
+            setStartLatitude(37.544661);
+            setStartLongitude(126.966189);
+        }
+    },[coords]);
 
     return (
         <>
