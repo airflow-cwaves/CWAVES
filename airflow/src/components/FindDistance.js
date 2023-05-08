@@ -158,6 +158,7 @@ const FindDistance = ({ endDocId, map }) => {
             console.log(ecoDistance)
             console.log(`에코경로: ${path}`);
             var arr1 = [];
+            arr1.push(new kakao.maps.LatLng(startLatitude, startLongitude));
             for (var i = 1; i < ecoDistance.length - 1; i++) {
                 arr1.push(new kakao.maps.LatLng(positions[ecoDistance[i]].Latitude, positions[ecoDistance[i]].Logitude));
             }
@@ -167,6 +168,7 @@ const FindDistance = ({ endDocId, map }) => {
             const path2 = shortestDistance.join(" -> "); // 최단경로 출력
             console.log(`최단경로: ${path2}`);
             var arr2 = [];
+            arr2.push(new kakao.maps.LatLng(startLatitude, startLongitude));
             for (var i = 1; i < shortestDistance.length - 1; i++) {
                 arr2.push(new kakao.maps.LatLng(positions[shortestDistance[i]].Latitude, positions[shortestDistance[i]].Logitude));
             }
