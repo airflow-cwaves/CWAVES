@@ -10,8 +10,6 @@ from datetime import datetime
 
 GPIO.setmode(GPIO.BCM) # GPIO BCM
 
-
-LED = 25 # BCM P21
 import firebase_admin
 from firebase_admin import credentials
 from firebase_admin import firestore
@@ -19,8 +17,8 @@ from firebase_admin import firestore
 # humidity & temperature
 GPIO.setwarnings(False)
 sensor = Adafruit_DHT.DHT11
-
 pin = 11
+humidity, temperature = Adafruit_DHT.read_retry(sensor, pin)
 
 # gas, dust
 bus = smbus.SMBus(1)
@@ -72,27 +70,27 @@ def read_gas(gas_type):
     voltage = raw / 255.0 * VCC
     RS = RL_VALUE * (VCC - voltage) / voltage
     if gas_type == GAS_HYDROGEN:
-        print("Hydrogen gas")
+        # "Hydrogen gas"
         GAS_R0 = 4.4
         GAS_SLOPE = -1.03
     elif gas_type == GAS_LPG:
-        #print("LPG gas")
+        # "LPG gas"
         GAS_R0 = 3.5
         GAS_SLOPE = -0.76
     elif gas_type == GAS_METHANE:
-        #print("Methane gas")
+        # "Methane gas"
         GAS_R0 = 4.4
         GAS_SLOPE = -1.03
     elif gas_type == GAS_CARBON_MONOXIDE:
-        print("Carbon Monoxide gas")
+        # "Carbon Monoxide gas"
         GAS_R0 = 4.4
         GAS_SLOPE = -1.03
     elif gas_type == GAS_ALCOHOL:
-        print("Alcohol gas")
+        # "Alcohol gas"
         GAS_R0 = 3.5
         GAS_SLOPE = -0.86
     elif gas_type == GAS_SMOKE:
-        #print("Smoke gas")
+        # "Smoke gas"
         GAS_R0 = 3.5
         GAS_SLOPE = -0.86
     else:
@@ -116,19 +114,13 @@ firebase_admin.initialize_app(cred)
 db = firestore.client()
 
 
-humidity, temperature = Adafruit_DHT.read_retry(sensor, pin)
-GPIO.setup(LED, GPIO.OUT)
 
 while (1) :
     if humidity is not None and temperature is not None :
         print('Temp={0:0.1f}*C Humidity={1:0.1f}'.format(temperature, humidity))
         
-        GPIO.output(LED, GPIO.HIGH)
         time.sleep(0.5)
 
-        GPIO.output(LED, GPIO.LOW)
-        time.sleep(0.5)
-        
         # gas, dust
         try:
             dust = float(dust_density())
@@ -143,7 +135,6 @@ while (1) :
             gas_smoke = float(read_gas(GAS_SMOKE))
             print("here: %.2f " % read_gas(GAS_SMOKE))
             
-            
             print("finedust2: %.2f ug/m3" % dust)
             print("Dust density: {:.2f} pcs/0.01cf, Gas concentration: {:.2f} ppm".format(dust, gas))
             print("")
@@ -154,6 +145,7 @@ while (1) :
                 dataout = pynmea2.NMEAStreamReader()
                 newdata=ser.readline()
                 
+                # 경도, 위도 받아오기
                 if newdata[0:6] == b'$GPRMC':
                     newmsg=pynmea2.parse(newdata.decode())
                     lat=newmsg.latitude
@@ -161,6 +153,7 @@ while (1) :
                     gps = "Latitude=" + str(lat) + "and Longitude=" + str(lng)
                     print(gps)
                     
+                    # firebase에 측정한 값과 시간 모두 
                     doc_air = db.collection(u'airflow').document()
         
                     doc_air.set({
@@ -177,17 +170,14 @@ while (1) :
                         u'Check' : True,      
                     })
                     break
-                
-                
-                
+                       
         except KeyboardInterrupt:
             print("KeyboardInterrupt")
             
-        
+        # 60초마다 실행
         time.sleep(60)
     
-
-            
+    # 온도, 습도가 측정되지 않음        
     else:
         print('fail')
 
