@@ -13,7 +13,7 @@ const Pathfinding=()=>{
     const container = useRef(<Map/>);
         
     useEffect(()=>{
-        dbService.collection("airflow2")
+        dbService.collection("airflow")
             .where("Check","==",true)
             .get()
             .then((querySnapshot)=>{

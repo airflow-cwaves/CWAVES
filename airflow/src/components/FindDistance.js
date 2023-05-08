@@ -16,7 +16,7 @@ const FindDistance = ({ endDocId, map }) => {
     const [startLongitude, setStartLongitude] = useState();
 
     useEffect(() => {
-        dbService.collection("airflow2")
+        dbService.collection("airflow")
             .where("Check", "==", true)
             .get()
             .then((querySnapshot) => {

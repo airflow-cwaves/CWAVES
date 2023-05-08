@@ -25,7 +25,7 @@ const Kakao=()=>{
         }
     };
     useEffect(()=>{
-        dbService.collection("airflow2")
+        dbService.collection("airflow")
         .where("Check","==",true)
         .get()
         .then((querySnapshot)=>{
