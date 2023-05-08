@@ -35,7 +35,7 @@ const FindDistance = ({ endDocId, map }) => {
             userDecisionTimeout: 5000,
         });
     useEffect(() => {
-        if(isdone){
+        if(isdone && coords.latitude && coords.longitude){
             
             //자기위치(위도, 경도) 주어졌을 때 가까운 지점 idx찾기
         
@@ -144,7 +144,7 @@ const FindDistance = ({ endDocId, map }) => {
             polyline.setMap(map);
         }
   
-    }, [isdone]);
+    }, [isdone, coords]);
 
     return (
         <>
