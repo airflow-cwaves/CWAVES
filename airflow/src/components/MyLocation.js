@@ -7,7 +7,7 @@ function MyLocation() {
             positionOptions: {
                 enableHighAccuracy: false,
             },
-            userDecisionTimeout: 5000,
+            userDecisionTimeout: 3000,
         });
 
     //위도: coords.latitude
